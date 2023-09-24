@@ -13,6 +13,8 @@ class InputField extends StatelessWidget {
     required this.validator,
     this.function,
     this.textInputType,
+    this.minLines = 1,
+    this.maxLines = 5,
     required this.hintText,
   });
   final TextEditingController controller;
@@ -22,6 +24,8 @@ class InputField extends StatelessWidget {
   final bool? isEnabled;
   final Function()? function;
   final String? Function(String?)? validator;
+  final int minLines;
+  final int maxLines;
   final TextInputType? textInputType;
 
   @override
@@ -33,7 +37,8 @@ class InputField extends StatelessWidget {
       enabled: isEnabled ?? true,
       keyboardType: textInputType ?? TextInputType.text,
       textInputAction: TextInputAction.next,
-      minLines: 1,
+      minLines: minLines,
+      maxLines: maxLines,
       style: GoogleFonts.inter(
         fontWeight: FontWeight.w500,
         fontSize: 14,
