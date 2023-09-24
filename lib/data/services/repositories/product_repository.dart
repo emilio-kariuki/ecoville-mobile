@@ -1,11 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:localstore/localstore.dart';
 import 'package:uuid/uuid.dart' as uuid;
 import 'package:ecoville_bloc/data/services/local_storage/shared_preferences_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/product_model.dart';
+import '../local_storage/local_database.dart';
 
 class ProductRepository {
   Future<bool> createProduct({
@@ -67,7 +69,6 @@ class ProductRepository {
           .get()
           .then((value) => Product.fromJson(value.data()!));
 
-    
       return products;
     } catch (e) {
       debugPrint(e.toString());
@@ -84,7 +85,23 @@ class ProductRepository {
           .get()
           .then((value) =>
               value.docs.map((e) => Product.fromJson(e.data())).toList());
-        debugPrint("the products are $products");
+      return products;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception(e);
+    }
+  }
+
+    Future<List<Product>> searchProductsFromCategory({required String query, required String category}) async {
+    try {
+      final firebaseFirestore = FirebaseFirestore.instance;
+      final products = await firebaseFirestore
+          .collection("products")
+          .where("name", isGreaterThanOrEqualTo: query)
+          .where("type", isEqualTo: category)
+          .get()
+          .then((value) =>
+              value.docs.map((e) => Product.fromJson(e.data())).toList());
       return products;
     } catch (e) {
       debugPrint(e.toString());
@@ -102,7 +119,6 @@ class ProductRepository {
           .then((value) =>
               value.docs.map((e) => Product.fromJson(e.data())).toList());
 
-      debugPrint("the products category are $products");
       return products;
     } catch (e) {
       debugPrint(e.toString());
@@ -184,6 +200,121 @@ class ProductRepository {
     } catch (e) {
       debugPrint(e.toString());
       return false;
+    }
+  }
+
+  Future<bool> addProductToFavourite({required Product waste}) async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      await dbHelper.insertProductToFavourite(db: db, favourite: waste);
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> addProductToCollected({required Product waste}) async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      await dbHelper.insertProductToCollected(db: db, collected: waste);
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  Future<List<Product>> getFavouriteProducts() async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      final products = await dbHelper.findAllFavouriteProducts(db: db);
+
+      return products;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<List<Product>> getCollecetdProducts() async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      final products = await dbHelper.findAllCollectedProducts(db: db);
+
+      return products;
+    } catch (e) {
+      debugPrint(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<bool> removeProductFromFavourite({required String id}) async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      await dbHelper.removeFromFavourite(db: db, id: id);
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> removeProductFromCollected({required String id}) async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      await dbHelper.removeFromCollected(db: db, id: id);
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  Stream<int> getNumberofProductsPosted() async* {
+    try {
+      final firebaseFirestore = FirebaseFirestore.instance;
+      final userId = await SharedPreferencesManager().getId();
+      final products = await firebaseFirestore
+          .collection("products")
+          .where("userId", isEqualTo: userId)
+          .get()
+          .then((value) =>
+              value.docs.map((e) => Product.fromJson(e.data())).toList());
+      yield products.length;
+    } catch (e) {
+      debugPrint(e.toString());
+      yield 0;
+    }
+  }
+
+  Future<int> getNumberofProductsCollected() async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      final waste = await dbHelper.findAllCollectedProducts(db: db);
+      return waste.length;
+    } catch (e) {
+      debugPrint(e.toString());
+      return 0;
+    }
+  }
+
+    Future<int> getNumberofProductsFavourite() async {
+    try {
+      final dbHelper = DatabaseHelper();
+      final db = await dbHelper.init();
+      final waste = await dbHelper.findAllFavouriteProducts(db: db);
+      return waste.length;
+    } catch (e) {
+      debugPrint(e.toString());
+      return 0;
     }
   }
 }
