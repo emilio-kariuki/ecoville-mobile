@@ -136,4 +136,14 @@ class ProductCubit extends Cubit<ProductState> {
       emit(ProductError(message: e.toString()));
     }
   }
+
+  void searchProductFromCategory({required String query, required String category }) async {
+    try {
+      emit(ProductLoading());
+      final products = await ProductRepository().searchProductsFromCategory(query: query, category: category);
+      emit(ProductSuccess(products: products));
+    } catch (e) {
+      emit(ProductError(message: e.toString()));
+    }
+  }
 }
