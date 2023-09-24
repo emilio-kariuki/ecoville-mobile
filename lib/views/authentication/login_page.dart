@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ecoville_bloc/utilities/color_constants.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +80,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       InputField(
                         textInputType: TextInputType.text,
+                        maxLines: 1,
                         controller: emailController,
                         hintText: "Enter your email",
                         validator: (value) {
@@ -104,7 +104,8 @@ class LoginPage extends StatelessWidget {
                         },
                         builder: (context, state) {
                           return InputField(
-                            textInputType: TextInputType.text,
+                              textInputType: TextInputType.text,
+                              maxLines: 1,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "Please enter your password";
@@ -158,14 +159,13 @@ class LoginPage extends StatelessWidget {
                       ),
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
-                          if (state is LoginSuccess) {
+                          if (state is LoginSuccess ||
+                              state is GoogleLoginSuccess) {
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            Navigator.pushReplacementNamed(context,"/home");
-                          }
 
-                          if (state is GoogleLoginSuccess) {
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            Navigator.pushReplacementNamed(context,"/home");
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.pushReplacementNamed(context, "/home");
+                            });
                           }
 
                           if (state is LoginFailure) {
@@ -256,7 +256,7 @@ class LoginPage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context,'/register');
+                              Navigator.pushNamed(context, '/register');
                             },
                             child: AutoSizeText(
                               "Sign Up",

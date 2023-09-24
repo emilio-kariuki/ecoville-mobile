@@ -13,8 +13,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../blocs/minimal_functionality/favourite/favourite_cubit.dart';
+import '../../../data/models/product_model.dart';
 import '../../../utilities/app_images.dart';
-import 'categories_page.dart';
+import '../../../utilities/common_widgets/product_container.dart';
+import '../../../utilities/common_widgets/row_button.dart';
+import '../../product/product_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -212,16 +216,12 @@ class HomePage extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   final data = state.products[index];
                                   return ProductContainer(
-                                    id: data.id,
-                                    height: height,
-                                    width: width,
-                                    name: data.name,
-                                    image: data.image,
-                                    location: data.location,
-                                    imageHeight: height * 0.13,
-                                    type: data.type,
-                                    description: data.description,
-                                    position: LatLng(data.lat, data.lon),
+                                    product: data,
+                                    stackFunction: () {
+                                      showProductBottomSheet(
+                                          product: data, context: context);
+                                    },
+                                    imageHeight: height * 0.14,
                                   );
                                 },
                               ),
@@ -289,4 +289,99 @@ class HomePage extends StatelessWidget {
       }),
     );
   }
+}
+
+showProductBottomSheet(
+    {required Product product, required BuildContext context}) {
+  final height = MediaQuery.of(context).size.height;
+  final width = MediaQuery.of(context).size.width;
+  showModalBottomSheet(
+      useRootNavigator: true,
+      useSafeArea: true,
+      context: context,
+      builder: (sdcontext) {
+        return Container(
+          height: height * 0.22,
+          width: width,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.grey.shade300,
+                    thickness: 1,
+                  ),
+                  SizedBox(
+                    height: height * 0.01,
+                  ),
+                  BlocProvider(
+                    create: (context) => FavouriteCubit(),
+                    child: Builder(builder: (context) {
+                      return BlocBuilder<FavouriteCubit, FavouriteState>(
+                        builder: (context, state) {
+                          return RowButton(
+                            width: width,
+                            icon: state is FavouriteAdded
+                                ? Icons.check
+                                : state is FavouriteLoading
+                                    ? Icons.delete_forever
+                                    : Icons.delete_outline,
+                            iconColor: state is FavouriteAdded
+                                ? Colors.green
+                                : Colors.black,
+                            title: state is FavouriteAdded
+                                ? "Added to Favourite"
+                                : state is FavouriteLoading
+                                    ? "Adding"
+                                    : "Add to Favourite",
+                            function: () async {
+                                (state is FavouriteInitial ||
+                                  state is FavouriteRemoved ||
+                                  state is FavouriteError)
+                              ? context
+                                  .read<FavouriteCubit>()
+                                  .addProductToFavourite(product: product)
+                              : context
+                                  .read<FavouriteCubit>()
+                                  .removeProductFromFavourite(id: product.id);
+                            },
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  RowButton(
+                    iconColor: Colors.black,
+                    width: width,
+                    icon: Icons.preview_outlined,
+                    title: "Preview this product",
+                    function: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductPage(
+                              product: product,
+                            ),
+                          ));
+                      
+                    },
+                  ),
+                ]),
+          ),
+        );
+      });
 }

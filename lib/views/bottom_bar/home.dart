@@ -1,7 +1,7 @@
 import 'package:ecoville_bloc/utilities/color_constants.dart';
 import 'package:ecoville_bloc/views/bottom_bar/pages/categories_page.dart';
 import 'package:ecoville_bloc/views/bottom_bar/pages/home_page.dart';
-import 'package:ecoville_bloc/views/bottom_bar/pages/notification_page.dart';
+import 'package:ecoville_bloc/views/bottom_bar/pages/collected_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,9 +67,9 @@ class _HomeState extends State<Home> {
         "three": "add",
       },
       {
-        "two": Icons.notifications_outlined,
-        "one": Icons.notifications_rounded,
-        "three": "notification",
+        "two": Icons.request_page_outlined,
+        "one": Icons.request_page_rounded,
+        "three": "Requests",
       },
       {
         "two": Icons.person_2_outlined,
@@ -101,7 +101,7 @@ class _HomeState extends State<Home> {
                       height: 45,
                       margin: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: primaryColor,
+                        color: secondaryColor,
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Icon(
@@ -122,7 +122,7 @@ class _HomeState extends State<Home> {
                           isActive ? icons['one'] : icons['two'],
                           size: 22,
                           color:
-                              isActive ? primaryColor : const Color(0xff666666),
+                              isActive ? secondaryColor : const Color(0xff666666),
                         ),
                         const SizedBox(
                           height: 2,
@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
                           icons['three'],
                           style: TextStyle(
                             color:
-                                isActive ? primaryColor : Colors.grey.shade600,
+                                isActive ? secondaryColor : Colors.grey.shade600,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),

@@ -1,9 +1,12 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ecoville_bloc/blocs/app_functionality/location/location_cubit.dart';
 import 'package:ecoville_bloc/utilities/app_images.dart';
+import 'package:ecoville_bloc/utilities/color_constants.dart';
 import 'package:ecoville_bloc/utilities/common_widgets/loading_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../blocs/app_functionality/product/product_cubit.dart';
 import '../../../blocs/minimal_functionality/drop_down/drop_down_cubit.dart';
+import '../../../blocs/minimal_functionality/get_image/get_image_cubit.dart';
 import '../../../utilities/common_widgets/input_field.dart';
 
 class AddPage extends StatelessWidget {
@@ -24,6 +28,7 @@ class AddPage extends StatelessWidget {
   final globalKey = GlobalKey<FormState>();
   final latController = TextEditingController();
   final lonController = TextEditingController();
+  final imageController = TextEditingController();
 
   String? selectedType;
 
@@ -68,7 +73,9 @@ class AddPage extends StatelessWidget {
                                     .createProduct(
                                   name: nameController.text,
                                   description: descriptionController.text,
-                                  image: AppImages.defaultImage,
+                                  image: imageController.text.isEmpty
+                                      ? AppImages.defaultImage
+                                      : imageController.text,
                                   location: locationController.text,
                                   type: selectedType!,
                                   lat: double.parse(latController.text),
@@ -77,7 +84,7 @@ class AddPage extends StatelessWidget {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff000000),
+                              backgroundColor: secondaryColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
@@ -225,7 +232,8 @@ class AddPage extends StatelessWidget {
                                       : selectedType,
                                   onChanged: (value) {
                                     BlocProvider.of<DropDownCubit>(context)
-                                        .dropDownClicked(value: value.toString());
+                                        .dropDownClicked(
+                                            value: value.toString());
                                   },
                                   buttonStyleData: ButtonStyleData(
                                     height: 50,
@@ -260,7 +268,8 @@ class AddPage extends StatelessWidget {
                                   ),
                                   menuItemStyleData: const MenuItemStyleData(
                                     height: 40,
-                                    padding: EdgeInsets.only(left: 14, right: 14),
+                                    padding:
+                                        EdgeInsets.only(left: 14, right: 14),
                                   ),
                                 ),
                               );
@@ -311,6 +320,85 @@ class AddPage extends StatelessWidget {
                           );
                         }),
                       ),
+                      SizedBox(
+                        height: height * 0.01,
+                      ),
+                      const ProductTitle(
+                        title: "Image",
+                      ),
+                      SizedBox(
+                        height: height * 0.01,
+                      ),
+                      BlocProvider(
+                        create: (context) => GetImageCubit(),
+                        child: Builder(
+                          builder: (context) {
+                            return BlocConsumer<GetImageCubit, GetImageState>(
+                              listener: (context, state) {
+                                if (state is ImagePicked) {
+                                  imageController.text = state.imageUrl;
+                                  Timer(
+                                    const Duration(milliseconds: 300),
+                                    () =>
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: Color(0xFF0C7319),
+                                        content: Text("Image uploaded"),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                if (state is ImageError) {
+                                  Timer(
+                                    const Duration(milliseconds: 100),
+                                    () =>
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: const Color(0xFFD5393B),
+                                        content: Text(state.message),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                final width = MediaQuery.of(context).size.width;
+                                return state is ImageUploading
+                                    ? const LoadingCircle()
+                                    : SizedBox(
+                                        height: 50,
+                                        width: width * 0.4,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            BlocProvider.of<GetImageCubit>(context)
+                                                .getImage();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color(0xff000000),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Add Image",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: const Color(0xffffffff),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                              },
+                            );
+                          }
+                        ),
+                      )
                     ],
                   ),
                 ),

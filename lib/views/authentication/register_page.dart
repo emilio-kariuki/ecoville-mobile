@@ -85,6 +85,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       InputField(
                         controller: nameController,
+                        maxLines: 1,
                         hintText: "Enter your name",
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -98,6 +99,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       InputField(
                         controller: emailController,
+                        maxLines: 1,
                         hintText: "Enter your email",
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -122,6 +124,7 @@ class RegisterPage extends StatelessWidget {
                               obScureText: state is PasswordObscured
                                   ? state.isObscured
                                   : true,
+                                  maxLines: 1,
                               controller: passwordController,
                               suffixIcon: InkWell(
                                 onTap: () {
@@ -150,13 +153,13 @@ class RegisterPage extends StatelessWidget {
                       ),
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
-                          if (state is RegisterSuccess) {
-                             Navigator.pushReplacementNamed(context,"/home");
+                          if (state is RegisterSuccess || state is GoogleLoginSuccess) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.pushReplacementNamed(context, "/home");
+                            });
                           }
 
-                          if (state is GoogleLoginSuccess) {
-                             Navigator.pushReplacementNamed(context,"/home");
-                          }
+                         
 
                           if (state is GoogleLoginFailure) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {

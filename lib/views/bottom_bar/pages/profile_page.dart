@@ -1,15 +1,20 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecoville_bloc/data/services/repositories/auth_repository.dart';
 import 'package:ecoville_bloc/utilities/color_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../blocs/app_functionality/user/user_cubit.dart';
 import '../../../utilities/app_images.dart';
 import '../../../utilities/common_widgets/network_image_container.dart';
+import '../../../utilities/common_widgets/profile/profile_card.dart';
+import '../../../utilities/common_widgets/profile/profile_padding.dart';
+import 'profile/feedback_page.dart';
+import 'profile/report_problem_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -56,8 +61,10 @@ class ProfilePage extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 15),
                           child: ListTile(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, '/personal_information');
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                Navigator.pushNamed(
+                                    context, '/personal_information');
+                              });
                             },
                             contentPadding: const EdgeInsets.all(0),
                             leading: NetworkImageContainer(
@@ -101,13 +108,13 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          height: height * 0.03,
+                          height: height * 0.02,
                         ),
-                        ProfileTitle(width: width, title: "Community"),
+                        ProfileTitle(width: width, title: "Products"),
                         const SizedBox(
                           height: 10,
                         ),
-                        CommunityButtons(),
+                        const ProductButtons(),
                         const SizedBox(
                           height: 20,
                         ),
@@ -118,7 +125,7 @@ class ProfilePage extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        HelpButtons(),
+                        const HelpButtons(),
                         const SizedBox(
                           height: 20,
                         ),
@@ -126,11 +133,11 @@ class ProfilePage extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        AboutButtons(),
+                        const AboutButtons(),
                         const SizedBox(
                           height: 10,
                         ),
-                        LogoutButtonContainer(),
+                        const LogoutButtonContainer(),
                       ],
                     ),
                   ],
@@ -204,14 +211,16 @@ class AboutButtons extends StatelessWidget {
             icon: Icons.info_outline,
             title: "About app",
             function: () {
-              Navigator.pushNamed(context, '/about_app');
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushNamed(context, '/about_page');
+              });
             },
             showTrailing: true,
           ),
           ProfilePadding(),
           ProfileCard(
             icon: Icons.vpn_key_outlined,
-            title: "Version - 2.0.0+14",
+            title: "Version - 0.1.0+1",
             function: () {},
             showTrailing: false,
           ),
@@ -241,10 +250,10 @@ class HelpButtons extends StatelessWidget {
             height: 10,
           ),
           ProfileCard(
-            icon: Icons.report_problem_outlined,
+            icon: Icons.feedback_outlined,
             title: "Send Feedback",
             function: () {
-              Navigator.pushNamed(context, '/send_feedback');
+              showFeedbackSheet(context: context);
             },
             showTrailing: true,
           ),
@@ -253,16 +262,7 @@ class HelpButtons extends StatelessWidget {
             icon: Icons.report_problem_outlined,
             title: "Report problem",
             function: () {
-              Navigator.pushNamed(context, '/report_problem');
-            },
-            showTrailing: true,
-          ),
-          ProfilePadding(),
-          ProfileCard(
-            icon: Icons.contact_emergency_outlined,
-            title: "Contact Developer",
-            function: () {
-              Navigator.pushNamed(context, '/contact_developer');
+              showReportSheet(context: context);
             },
             showTrailing: true,
           ),
@@ -276,8 +276,8 @@ class HelpButtons extends StatelessWidget {
   }
 }
 
-class CommunityButtons extends StatelessWidget {
-  const CommunityButtons({
+class ProductButtons extends StatelessWidget {
+  const ProductButtons({
     super.key,
   });
 
@@ -294,27 +294,33 @@ class CommunityButtons extends StatelessWidget {
           ),
           ProfileCard(
             icon: Icons.restore_outlined,
-            title: "Resources",
+            title: "My Products",
             function: () {
-              Navigator.pushNamed(context, '/user_resources');
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushNamed(context, '/my_products_page');
+              });
             },
             showTrailing: true,
           ),
           ProfilePadding(),
           ProfileCard(
-            icon: Icons.person,
-            title: "Community leads",
+            icon: Icons.favorite_border_outlined,
+            title: "My Favourites",
             function: () {
-              Navigator.pushNamed(context, '/community_leads');
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushNamed(context, '/favourite_page');
+              });
             },
             showTrailing: true,
           ),
           ProfilePadding(),
           ProfileCard(
-            icon: Icons.person,
-            title: "Profile",
+            icon: Icons.request_page_outlined,
+            title: "My Requests",
             function: () {
-              Navigator.pushNamed(context, '/personal_information');
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushNamed(context, '/personal_information');
+              });
             },
             showTrailing: true,
           ),
@@ -349,7 +355,9 @@ class AccountButtons extends StatelessWidget {
             icon: Icons.person,
             title: "Profile",
             function: () {
-              Navigator.pushNamed(context, '/personal_information');
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushNamed(context, '/personal_information');
+              });
             },
             showTrailing: true,
           ),
@@ -358,26 +366,6 @@ class AccountButtons extends StatelessWidget {
     );
   }
 }
-
-
-
-class ProfilePadding extends StatelessWidget {
-   ProfilePadding({
-    super.key,
-     this.thickness = 0.2
-  });
-
-  double ?thickness;
-
-  @override
-  Widget build(BuildContext context) {
-    return Divider(
-      height: 5,
-      thickness: thickness,
-    );
-  }
-}
-
 
 class UserProfilePicture extends StatelessWidget {
   const UserProfilePicture({
@@ -467,8 +455,8 @@ class ProfileTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 10,
       ),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 255, 255),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 255, 255, 255),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -481,66 +469,6 @@ class ProfileTitle extends StatelessWidget {
               fontSize: 18,
               color: const Color(0xff000000),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProfileCard extends StatelessWidget {
-  const ProfileCard(
-      {super.key,
-      required this.icon,
-      required this.title,
-      required this.function,
-      required this.showTrailing,
- });
-  final String title;
-  final Function() function;
-  final bool showTrailing;
-  final IconData icon;
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        SystemChannels.textInput.invokeMethod('TextInput.hide');
-        function();
-      },
-      style: ElevatedButton.styleFrom(
-        shadowColor: Colors.white,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.black, size: 15),
-          const SizedBox(
-            width: 18,
-          ),
-          AutoSizeText(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[800],
-            ),
-          ),
-          const Spacer(),
-          showTrailing
-              ? Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.black,
-                  size: 15,
-                )
-              : const SizedBox.shrink(),
-          const SizedBox(
-            width: 5,
           ),
         ],
       ),
