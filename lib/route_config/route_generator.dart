@@ -1,3 +1,6 @@
+import 'package:ecoville_bloc/views/bottom_bar/pages/profile/favourites_page.dart';
+import 'package:ecoville_bloc/views/bottom_bar/pages/profile/feedback_page.dart';
+import 'package:ecoville_bloc/views/bottom_bar/pages/profile/my_products_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -7,7 +10,7 @@ import '../views/authentication/login_page.dart';
 import '../views/authentication/register_page.dart';
 import '../views/authentication/reset_password.dart';
 import '../views/bottom_bar/home.dart';
-
+import '../views/bottom_bar/pages/profile/about_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,6 +23,14 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => RegisterPage());
       case '/reset_password':
         return MaterialPageRoute(builder: (_) => ResetPassword());
+      case '/favourite_page':
+        return MaterialPageRoute(builder: (_) => const FavouritesPage());
+      case '/my_products_page':
+        return MaterialPageRoute(builder: (_) => const MyProductsPage());
+      case '/feedback_page':
+        return MaterialPageRoute(builder: (_) => FeedbackPage());
+      case '/about_page':
+        return MaterialPageRoute(builder: (_) => const AboutPage());
       default:
         return _errorRoute();
     }
