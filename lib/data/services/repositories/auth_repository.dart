@@ -143,8 +143,6 @@ class AuthRepository {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
 
-      debugPrint("The google account is $googleSignInAccount");
-
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
@@ -153,29 +151,26 @@ class AuthRepository {
             idToken: googleSignInAuthentication.idToken);
         final UserCredential userCredential =
             await auth.signInWithCredential(credential);
-        debugPrint("The user is $userCredential");
-          await SharedPreferencesManager().setLoggedIn(value: true);
-          await SharedPreferencesManager()
-              .setName(value: userCredential.user!.displayName ?? "name");
-          await SharedPreferencesManager()
-              .setId(value: userCredential.user!.uid);
-          debugPrint("Login Succesfull");
-          if(userCredential.additionalUserInfo!.isNewUser){
-            await UserRepository().createUserData(
-              user: UserModel(
-                  userCredential.user!.displayName ?? "name",
-                  userCredential.user!.email ?? "email",
-                  "phone",
-                  "location",
-                  "lon",
-                  "lat",
-                  userCredential.user!.uid,
-                  userCredential.user!.photoURL ?? "imageUrl"),
-              id: userCredential.user!.uid,
-            );
-          }
-          return true;
-        
+        await SharedPreferencesManager().setLoggedIn(value: true);
+        await SharedPreferencesManager()
+            .setName(value: userCredential.user!.displayName ?? "name");
+        await SharedPreferencesManager().setId(value: userCredential.user!.uid);
+        debugPrint("Login Succesfull");
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          await UserRepository().createUserData(
+            user: UserModel(
+                userCredential.user!.displayName ?? "name",
+                userCredential.user!.email ?? "email",
+                "phone",
+                "location",
+                "lon",
+                "lat",
+                userCredential.user!.uid,
+                userCredential.user!.photoURL ?? "imageUrl"),
+            id: userCredential.user!.uid,
+          );
+        }
+        return true;
       } else {
         return false;
       }

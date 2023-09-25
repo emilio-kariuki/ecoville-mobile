@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ecoville_bloc/blocs/app_functionality/product/product_cubit.dart';
 import 'package:ecoville_bloc/blocs/minimal_functionality/page/page_cubit.dart';
@@ -20,11 +19,11 @@ class CategoriesPage extends StatelessWidget {
   final searchController = TextEditingController();
 
   final List<Map<String, dynamic>> items = [
-    {"name": "Plastic", "image": AppImages.reset},
-    {"name": "E-Waste", "image": AppImages.login},
-    {"name": "Glass", "image": AppImages.register},
-    {"name": "Organic", "image": AppImages.reset},
-    {"name": "Metal", "image": AppImages.login},
+    {"index": 0, "name": "Plastic", "image": AppImages.reset},
+    {"index": 1, "name": "E-Waste", "image": AppImages.login},
+    {"index": 2, "name": "Glass", "image": AppImages.register},
+    {"index": 3, "name": "Organic", "image": AppImages.reset},
+    {"index": 4, "name": "Metal", "image": AppImages.login},
   ];
 
   @override
@@ -69,6 +68,9 @@ class CategoriesPage extends StatelessWidget {
                           ? items[state.index]["name"]
                           : "plastic",
                       index: state is PageChanged ? state.index : 0,
+                      categoryIndex:  state is PageChanged
+                          ? items[state.index]["name"]
+                          : 0,
                     );
                   },
                 ),
@@ -254,6 +256,7 @@ class CategorySearch extends StatelessWidget {
     required this.searchController,
     required this.category,
     required this.index,
+    required this.categoryIndex,
   });
 
   final double height;
@@ -261,6 +264,7 @@ class CategorySearch extends StatelessWidget {
   final TextEditingController searchController;
   final String category;
   final int index;
+  final int categoryIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -297,10 +301,11 @@ class CategorySearch extends StatelessWidget {
               ),
               onChanged: (value) {},
               onFieldSubmitted: (value) {
-                context.read<ProductCubit>().searchProductFromCategory(
-                      category: category,
-                      query: value,
-                    );
+                if (index == categoryIndex) {
+                  context.read<ProductCubit>().searchProductFromCategory(
+                      category: category.toLowerCase(),
+                      query: searchController.text);
+                }
               },
               decoration: InputDecoration(
                 hintText: "Search for plastic, glass, metal, etc.",

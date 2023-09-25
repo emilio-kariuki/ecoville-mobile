@@ -15,8 +15,6 @@ class AuthenticationBloc
       try {
         final isLoggedIn = await SharedPreferencesManager().isLoggedIn();
         final user = FirebaseAuth.instance.currentUser;
-        debugPrint("user is $user");
-
         if (isLoggedIn && user != null) {
           emit(AuthenticationAuthenticated());
         } else {

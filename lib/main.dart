@@ -24,7 +24,6 @@ void main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-
   runApp(const MainApp());
 }
 
@@ -50,6 +49,7 @@ class MainApp extends StatelessWidget {
           lazy: false,
           create: (context) => LocationCubit()..getCurrentLocation(),
         ),
+       
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

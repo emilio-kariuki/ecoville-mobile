@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ecoville_bloc/blocs/app_functionality/location/location_cubit.dart';
+import 'package:ecoville_bloc/blocs/minimal_functionality/bottom_navigation/bottom_navigation_cubit.dart';
 import 'package:ecoville_bloc/utilities/app_images.dart';
 import 'package:ecoville_bloc/utilities/color_constants.dart';
 import 'package:ecoville_bloc/utilities/common_widgets/loading_circle.dart';
@@ -51,7 +52,22 @@ class AddPage extends StatelessWidget {
           key: globalKey,
           child: Scaffold(
               backgroundColor: Colors.white,
-              bottomNavigationBar: BlocBuilder<ProductCubit, ProductState>(
+              bottomNavigationBar: BlocConsumer<ProductCubit, ProductState>(
+                listener: (context, state) {
+                  if (state is ProductCreated) {
+                    Timer(
+                      const Duration(milliseconds: 300),
+                      () => ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Color(0xFF0C7319),
+                          content: Text("Product created"),
+                        ),
+                      ),
+                    );
+                    context.read<BottomNavigationCubit>().changeTab(0);
+                  }
+                },
                 builder: (context, state) {
                   return Container(
                     height: height * 0.065,
@@ -331,73 +347,72 @@ class AddPage extends StatelessWidget {
                       ),
                       BlocProvider(
                         create: (context) => GetImageCubit(),
-                        child: Builder(
-                          builder: (context) {
-                            return BlocConsumer<GetImageCubit, GetImageState>(
-                              listener: (context, state) {
-                                if (state is ImagePicked) {
-                                  imageController.text = state.imageUrl;
-                                  Timer(
-                                    const Duration(milliseconds: 300),
-                                    () =>
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: Color(0xFF0C7319),
-                                        content: Text("Image uploaded"),
-                                      ),
+                        child: Builder(builder: (context) {
+                          return BlocConsumer<GetImageCubit, GetImageState>(
+                            listener: (context, state) {
+                              if (state is ImagePicked) {
+                                imageController.text = state.imageUrl;
+                                Timer(
+                                  const Duration(milliseconds: 300),
+                                  () => ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Color(0xFF0C7319),
+                                      content: Text("Image uploaded"),
                                     ),
-                                  );
-                                }
+                                  ),
+                                );
+                              }
 
-                                if (state is ImageError) {
-                                  Timer(
-                                    const Duration(milliseconds: 100),
-                                    () =>
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        behavior: SnackBarBehavior.floating,
-                                        backgroundColor: const Color(0xFFD5393B),
-                                        content: Text(state.message),
-                                      ),
+                              if (state is ImageError) {
+                                Timer(
+                                  const Duration(milliseconds: 100),
+                                  () => ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    SnackBar(
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: const Color(0xFFD5393B),
+                                      content: Text(state.message),
                                     ),
-                                  );
-                                }
-                              },
-                              builder: (context, state) {
-                                final width = MediaQuery.of(context).size.width;
-                                return state is ImageUploading
-                                    ? const LoadingCircle()
-                                    : SizedBox(
-                                        height: 50,
-                                        width: width * 0.4,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            BlocProvider.of<GetImageCubit>(context)
-                                                .getImage();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color(0xff000000),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            "Add Image",
-                                            style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: const Color(0xffffffff),
-                                            ),
+                                  ),
+                                );
+                              }
+                            },
+                            builder: (context, state) {
+                              final width = MediaQuery.of(context).size.width;
+                              return state is ImageUploading
+                                  ? const LoadingCircle()
+                                  : SizedBox(
+                                      height: 50,
+                                      width: width * 0.4,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          BlocProvider.of<GetImageCubit>(
+                                                  context)
+                                              .getImage();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xff000000),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
                                         ),
-                                      );
-                              },
-                            );
-                          }
-                        ),
+                                        child: Text(
+                                          "Add Image",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xffffffff),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                            },
+                          );
+                        }),
                       )
                     ],
                   ),
