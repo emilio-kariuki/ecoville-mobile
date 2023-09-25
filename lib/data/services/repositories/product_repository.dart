@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:localstore/localstore.dart';
 import 'package:uuid/uuid.dart' as uuid;
 import 'package:ecoville_bloc/data/services/local_storage/shared_preferences_manager.dart';
@@ -27,7 +28,7 @@ class ProductRepository {
         'mSecs': DateTime.now().millisecondsSinceEpoch,
         'nSecs': 5678
       });
-      await FirebaseFirestore.instance.collection('products').doc(id).set({
+      await FirebaseFirestore.instance.collection(kReleaseMode ? "products" : "products_test").doc(id).set({
         "id": id,
         "name": name,
         "description": description,
@@ -49,7 +50,7 @@ class ProductRepository {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .get()
           .then((value) =>
               value.docs.map((e) => Product.fromJson(e.data())).toList());
@@ -64,7 +65,7 @@ class ProductRepository {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .doc(id)
           .get()
           .then((value) => Product.fromJson(value.data()!));
@@ -80,7 +81,7 @@ class ProductRepository {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .where("name", isGreaterThanOrEqualTo: query)
           .get()
           .then((value) =>
@@ -96,7 +97,7 @@ class ProductRepository {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .where("name", isGreaterThanOrEqualTo: query)
           .where("type", isEqualTo: category)
           .get()
@@ -113,7 +114,7 @@ class ProductRepository {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .where("type", isEqualTo: category)
           .get()
           .then((value) =>
@@ -131,7 +132,7 @@ class ProductRepository {
       final firebaseFirestore = FirebaseFirestore.instance;
       final userId = await SharedPreferencesManager().getId();
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .where("userId", isEqualTo: userId)
           .get()
           .then((value) =>
@@ -149,7 +150,7 @@ class ProductRepository {
       final firebaseFirestore = FirebaseFirestore.instance;
       final userId = await SharedPreferencesManager().getId();
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .where("userId", isEqualTo: userId)
           .where("type", isEqualTo: category)
           .get()
@@ -165,7 +166,7 @@ class ProductRepository {
   Future<bool> deleteProduct({required String id}) async {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
-      await firebaseFirestore.collection("products").doc(id).delete();
+      await firebaseFirestore.collection(kReleaseMode ? "products" : "products_test").doc(id).delete();
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -186,7 +187,7 @@ class ProductRepository {
     try {
       final firebaseFirestore = FirebaseFirestore.instance;
 
-      await firebaseFirestore.collection("products").doc(id).update({
+      await firebaseFirestore.collection(kReleaseMode ? "products" : "products_test").doc(id).update({
         "name": name,
         "description": description,
         "location": location,
@@ -282,7 +283,7 @@ class ProductRepository {
       final firebaseFirestore = FirebaseFirestore.instance;
       final userId = await SharedPreferencesManager().getId();
       final products = await firebaseFirestore
-          .collection("products")
+          .collection(kReleaseMode ? "products" : "products_test")
           .where("userId", isEqualTo: userId)
           .get()
           .then((value) =>
