@@ -8,12 +8,56 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:152915277921:android:a931cd94f61de7a1f7d220",
+        "android_client_info": {
+          "package_name": "com.ecoville.eville"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152915277921-b5mc4lnc4v0i0l9ijqdlvkpqv942aehq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvT4sVh9epwvdwqoVXYnFIX_ljXQa_S_Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152915277921-b5mc4lnc4v0i0l9ijqdlvkpqv942aehq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "152915277921-50cvddeqmgav9cj2srkb9vkruo315en3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eville"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:152915277921:android:d4c5f185c9366881f7d220",
         "android_client_info": {
           "package_name": "com.example.ecoville_bloc"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "152915277921-qi63lqqi6ourija0ed4p7cjm1576okhr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ecoville_bloc",
+            "certificate_hash": "c5bf479f662c7454464dc157954dd9034250d4c8"
+          }
+        },
         {
           "client_id": "152915277921-b5mc4lnc4v0i0l9ijqdlvkpqv942aehq.apps.googleusercontent.com",
           "client_type": 3

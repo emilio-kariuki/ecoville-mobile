@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBvT4sVh9epwvdwqoVXYnFIX_ljXQa_S_Q',
-    appId: '1:152915277921:android:d4c5f185c9366881f7d220',
+    appId: '1:152915277921:android:a931cd94f61de7a1f7d220',
     messagingSenderId: '152915277921',
     projectId: 'ecoville-1b1d1',
     databaseURL: 'https://ecoville-1b1d1-default-rtdb.firebaseio.com',
@@ -65,6 +65,7 @@ class DefaultFirebaseOptions {
     projectId: 'ecoville-1b1d1',
     databaseURL: 'https://ecoville-1b1d1-default-rtdb.firebaseio.com',
     storageBucket: 'ecoville-1b1d1.appspot.com',
+    androidClientId: '152915277921-qi63lqqi6ourija0ed4p7cjm1576okhr.apps.googleusercontent.com',
     iosClientId: '152915277921-ifoakrjuors1ppbcu8rqm42vckq0i89u.apps.googleusercontent.com',
     iosBundleId: 'com.example.ecovilleBloc',
   );

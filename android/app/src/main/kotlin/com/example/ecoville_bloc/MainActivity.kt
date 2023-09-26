@@ -1,4 +1,4 @@
-package com.example.ecoville_bloc
+package com.ecoville.eville
 
 import io.flutter.embedding.android.FlutterActivity
 
